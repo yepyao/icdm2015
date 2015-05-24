@@ -18,9 +18,10 @@ public class UserCF {
 		userSim = new UserSim(dataset);
 	}
 
-	HashMap<Integer, HashMap<String, Double>> res = new HashMap<Integer, HashMap<String, Double>>();
+	
 
-	public void predict() {
+	public HashMap<Integer, HashMap<String, Double>> predict() {
+		HashMap<Integer, HashMap<String, Double>> res = new HashMap<Integer, HashMap<String, Double>>();
 		Set<Integer> userSet = dataset.getUserSet();
 		for (int userId : userSet)
 			res.put(userId, new HashMap<String, Double>());
@@ -39,5 +40,6 @@ public class UserCF {
 				}
 			}
 		}
+		return res;
 	}
 }
