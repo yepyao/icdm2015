@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,5 +53,14 @@ public class Dataset {
 		System.out.println("#User: "+userList.keySet().size());
 		System.out.println("#Loc: "+locList.keySet().size());
 		
+	}
+	public void outputUserPoints(String filename) throws IOException{
+		PrintStream out = new PrintStream(filename);
+		for(Integer userId: userList.keySet()){
+			out.println(userId);
+			for(CheckIn check:userList.get(userId))
+				out.println(check.latitude+", "+check.longitude);
+			out.println("------------------");
+		}
 	}
 }
