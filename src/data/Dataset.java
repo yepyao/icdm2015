@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.Set;
 
 public class Dataset {
@@ -52,7 +53,13 @@ public class Dataset {
 		System.out.println("#checkin: "+list.size());
 		System.out.println("#User: "+userList.keySet().size());
 		System.out.println("#Loc: "+locList.keySet().size());
-		
+		//divide
+		Random rand = new Random(0);
+		for(CheckIn check: list){
+			int r = rand.nextInt(8);
+			if (r == 6 || r == 7) check.type = DataType.TEST;
+			if (r == 5) check.type = DataType.TUNE;
+		}
 	}
 	public void outputUserPoints(String filename) throws IOException{
 		PrintStream out = new PrintStream(filename);
@@ -62,5 +69,19 @@ public class Dataset {
 				out.println(check.latitude+", "+check.longitude);
 			out.println("------------------");
 		}
+		out.close();
+		System.out.println("outputUserPoints ok!");
+	}
+	
+	//get
+	public Set<Integer> getUserSet(){
+		return userList.keySet();
+	}
+	public LinkedList<CheckIn> getUserCheckIns(int userId, DataType type){
+		LinkedList<CheckIn> res = new LinkedList<CheckIn>();
+		for(CheckIn check:userList.get(userId)){
+			if (check.type == type) res.add(check);
+		}
+		return res;
 	}
 }

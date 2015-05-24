@@ -19,13 +19,15 @@ public class CheckIn implements Comparable<CheckIn>{
 		time = timeParser.parse(arr[7]);
 		//System.out.println(timeParser.format(time));
 	}
-	int userId;
-	String locId;
+	public int userId;
+	public String locId;
 	String locCat;
 	String locCatName;
-	double latitude;
-	double longitude;
-	Date time;
+	public double latitude;
+	public double longitude;
+	public Date time;
+	//divide train(0) test(1) and tune(2)
+	DataType type = DataType.TRAIN;
 	@Override
 	public int compareTo(CheckIn o) {
 		return this.time.compareTo(o.time);
