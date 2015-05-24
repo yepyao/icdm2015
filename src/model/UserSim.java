@@ -26,11 +26,14 @@ public class UserSim {
 				if (user1 < user2) {
 					LinkedList<CheckIn> list2 = dataset.getUserCheckIns(user2,
 							DataType.TRAIN);
+					HashSet<String> loc2 = new HashSet<String>();
+					for (CheckIn check : list2)
+						loc2.add(check.locId);
 					int size1 = list1.size();
 					int size2 = list2.size();
 					int com = 0;
-					for(CheckIn check:list2){
-						if (loc1.contains(check.locId))
+					for(String locId:loc2){
+						if (loc1.contains(locId))
 							com++;
 					}
 					double sim12 = com/(Math.sqrt(size1)*Math.sqrt(size2));
