@@ -1,0 +1,16 @@
+first time: Wed Apr 04 02:00:09 CST 2012
+last time: Sat Feb 16 10:35:36 CST 2013
+
+user-cf NYK
+#checkin: 179468
+#User: 1083
+#Loc: 9989
+outputUserPoints ok!
+user sim ok!
+pre 5:0.1501385041551246
+pre10:0.11468144044321282
+pre20:0.08448753462603806
+rec 5:0.04572478820877486
+rec10:0.06770204602066329
+rec20:0.09758054790951358
+

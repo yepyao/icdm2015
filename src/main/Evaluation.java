@@ -15,6 +15,7 @@ public class Evaluation {
 
 	public static void evaluateUserCF(Dataset dataset,
 			HashMap<Integer, HashMap<String, Double>> res) {
+		System.out.println("Predict...");
 		Set<Integer> userSet = dataset.getUserSet();
 		double pre5 = 0;
 		double pre10 = 0;
@@ -26,6 +27,7 @@ public class Evaluation {
 		int hours = dataset.getHourLength();
 		int validHours = 0;
 		for (int h = 0; h < hours; h++) {
+			System.out.println("Hour:"+h);
 			double tp5 = 0;
 			double tp10 = 0;
 			double tp20 = 0;
@@ -48,28 +50,32 @@ public class Evaluation {
 				LinkedList<CheckIn> checkIns = dataset.getUserCheckIns(userId,
 						DataType.TEST);
 				HashSet<String> posSet = dataset.getPosSet(checkIns, h);
-				if (posSet.size() == 0)
-					continue;
-				validHours++;
 
+				int pos5 = 0;
+				int pos10 = 0;
+				int pos20 = 0;
 				for (int i = 0; i < 20; i++) {
 					String locId = list.get(i).locId;
 					if (posSet.contains(locId)) {
 						if (i < 5)
-							tp5++;
+							pos5++;
 						if (i < 10)
-							tp10++;
+							pos10++;
 						if (i < 20)
-							tp20++;
+							pos20++;
 					}
 				}
-				fp5 += 5 - tp5;
-				fp10 += 10 - tp10;
-				fp20 += 20 - tp20;
+				tp5 += pos5;
+				tp10+= pos10;
+				tp20+= pos20;
+				
+				fp5 += 5 - pos5;
+				fp10 += 10 - pos10;
+				fp20 += 20 - pos20;
 
-				fn5 += posSet.size() - tp5;
-				fn10 += posSet.size() - tp10;
-				fn20 += posSet.size() - tp20;
+				fn5 += posSet.size() - pos5;
+				fn10 += posSet.size() - pos10;
+				fn20 += posSet.size() - pos20;
 
 			}
 
@@ -83,12 +89,12 @@ public class Evaluation {
 		}
 
 		// int userNum = userSet.size();
-		System.out.println("pre 5:" + pre5 / validHours);
-		System.out.println("pre10:" + pre10 / validHours);
-		System.out.println("pre20:" + pre20 / validHours);
-		System.out.println("rec 5:" + rec5 / validHours);
-		System.out.println("rec10:" + rec10 / validHours);
-		System.out.println("rec20:" + rec20 / validHours);
+		System.out.println("pre 5:" + pre5 / hours);
+		System.out.println("pre10:" + pre10 / hours);
+		System.out.println("pre20:" + pre20 / hours);
+		System.out.println("rec 5:" + rec5 / hours);
+		System.out.println("rec10:" + rec10 / hours);
+		System.out.println("rec20:" + rec20 / hours);
 	}
 
 }
