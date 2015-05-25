@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -15,8 +16,24 @@ public class Evaluation {
 
 	public static void evaluateUserCF(Dataset dataset,
 			HashMap<Integer, HashMap<String, Double>> res) {
-		System.out.println("Predict...");
+		System.out.println("Evaluating...");
 		Set<Integer> userSet = dataset.getUserSet();
+
+		HashMap<Integer,ArrayList<PredPoint>> cache = new HashMap<Integer, ArrayList<PredPoint>>();
+		for (int userId : userSet) {
+			//System.out.println("userId: " +userId );
+			HashMap<String, Double> pred = res.get(userId);
+			LinkedList<PredPoint> list = new LinkedList<PredPoint>();
+			for (String locId : pred.keySet()) {
+				list.add(new PredPoint(locId, pred.get(locId)));
+			}
+			Collections.sort(list);
+			ArrayList<PredPoint> subList = new ArrayList<PredPoint>();
+			Iterator<PredPoint> iter = list.iterator();
+			for(int i=0;i<20;i++) subList.add(iter.next());
+			cache.put(userId, subList);
+		}
+
 		double pre5 = 0;
 		double pre10 = 0;
 		double pre20 = 0;
@@ -27,7 +44,7 @@ public class Evaluation {
 		int hours = dataset.getHourLength();
 		int validHours = 0;
 		for (int h = 0; h < hours; h++) {
-			System.out.println("Hour:"+h);
+			//System.out.println("Hour:" + h);
 			double tp5 = 0;
 			double tp10 = 0;
 			double tp20 = 0;
@@ -40,12 +57,7 @@ public class Evaluation {
 			double fn10 = 0;
 			double fn20 = 0;
 			for (int userId : userSet) {
-				HashMap<String, Double> pred = res.get(userId);
-				ArrayList<PredPoint> list = new ArrayList<PredPoint>();
-				for (String locId : pred.keySet()) {
-					list.add(new PredPoint(locId, pred.get(locId)));
-				}
-				Collections.sort(list);
+				ArrayList<PredPoint> list = cache.get(userId);
 
 				LinkedList<CheckIn> checkIns = dataset.getUserCheckIns(userId,
 						DataType.TEST);
@@ -66,9 +78,9 @@ public class Evaluation {
 					}
 				}
 				tp5 += pos5;
-				tp10+= pos10;
-				tp20+= pos20;
-				
+				tp10 += pos10;
+				tp20 += pos20;
+
 				fp5 += 5 - pos5;
 				fp10 += 10 - pos10;
 				fp20 += 20 - pos20;
