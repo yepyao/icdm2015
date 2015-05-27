@@ -18,6 +18,7 @@ public class CheckIn implements Comparable<CheckIn>{
 		longitude = Double.parseDouble(arr[5]);
 		time = timeParser.parse(arr[7]);
 		//System.out.println(timeParser.format(time));
+		hour = (int)(time.getTime()/1000/60/60);
 	}
 	public int userId;
 	public String locId;
@@ -26,6 +27,7 @@ public class CheckIn implements Comparable<CheckIn>{
 	public double latitude;
 	public double longitude;
 	public Date time;
+	public int hour;
 	//divide train(0) test(1) and tune(2)
 	DataType type = DataType.TRAIN;
 	@Override

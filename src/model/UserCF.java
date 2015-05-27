@@ -9,7 +9,7 @@ import data.CheckIn;
 import data.DataType;
 import data.Dataset;
 
-public class UserCF {
+public class UserCF implements Model{
 	Dataset dataset;
 	UserSim userSim;
 
@@ -19,8 +19,10 @@ public class UserCF {
 	}
 
 	
-
-	public HashMap<Integer, HashMap<String, Double>> predict() {
+	HashMap<Integer, HashMap<String, Double>> cache = null;
+	public HashMap<Integer, HashMap<String, Double>> predict(int hour, int totalHours) {
+		if (cache!=null) return cache;
+		
 		HashMap<Integer, HashMap<String, Double>> res = new HashMap<Integer, HashMap<String, Double>>();
 		Set<Integer> userSet = dataset.getUserSet();
 		for (int userId : userSet)
@@ -40,6 +42,7 @@ public class UserCF {
 				}
 			}
 		}
+		cache = res;
 		return res;
 	}
 }

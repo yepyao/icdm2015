@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import model.Model;
 import data.CheckIn;
 import data.DataType;
 import data.Dataset;
@@ -15,24 +16,9 @@ import data.Dataset;
 public class Evaluation {
 
 	public static void evaluateUserCF(Dataset dataset,
-			HashMap<Integer, HashMap<String, Double>> res) {
+			Model model) {
 		System.out.println("Evaluating...");
 		Set<Integer> userSet = dataset.getUserSet();
-
-		HashMap<Integer,ArrayList<PredPoint>> cache = new HashMap<Integer, ArrayList<PredPoint>>();
-		for (int userId : userSet) {
-			//System.out.println("userId: " +userId );
-			HashMap<String, Double> pred = res.get(userId);
-			LinkedList<PredPoint> list = new LinkedList<PredPoint>();
-			for (String locId : pred.keySet()) {
-				list.add(new PredPoint(locId, pred.get(locId)));
-			}
-			Collections.sort(list);
-			ArrayList<PredPoint> subList = new ArrayList<PredPoint>();
-			Iterator<PredPoint> iter = list.iterator();
-			for(int i=0;i<20;i++) subList.add(iter.next());
-			cache.put(userId, subList);
-		}
 
 		double pre5 = 0;
 		double pre10 = 0;
@@ -44,6 +30,21 @@ public class Evaluation {
 		int hours = dataset.getHourLength();
 		int validHours = 0;
 		for (int h = 0; h < hours; h++) {
+			System.out.println("hour: "+h);
+			HashMap<Integer,ArrayList<PredPoint>> cache = new HashMap<Integer, ArrayList<PredPoint>>();
+			HashMap<Integer, HashMap<String, Double>> res = model.predict(h, hours);
+			for (int userId : userSet) {
+				HashMap<String, Double> pred = res.get(userId);
+				LinkedList<PredPoint> list = new LinkedList<PredPoint>();
+				for (String locId : pred.keySet()) {
+					list.add(new PredPoint(locId, pred.get(locId)));
+				}
+				Collections.sort(list);
+				ArrayList<PredPoint> subList = new ArrayList<PredPoint>();
+				Iterator<PredPoint> iter = list.iterator();
+				for(int i=0;i<20;i++) subList.add(iter.next());
+				cache.put(userId, subList);
+			}
 			//System.out.println("Hour:" + h);
 			double tp5 = 0;
 			double tp10 = 0;
@@ -90,7 +91,9 @@ public class Evaluation {
 				fn20 += posSet.size() - pos20;
 
 			}
-
+			if (tp5+fn5 == 0) continue;
+			validHours++;
+			
 			pre5 += tp5 / (tp5 + fp5);
 			pre10 += tp10 / (tp10 + fp10);
 			pre20 += tp20 / (tp20 + fp20);
@@ -101,12 +104,12 @@ public class Evaluation {
 		}
 
 		// int userNum = userSet.size();
-		System.out.println("pre 5:" + pre5 / hours);
-		System.out.println("pre10:" + pre10 / hours);
-		System.out.println("pre20:" + pre20 / hours);
-		System.out.println("rec 5:" + rec5 / hours);
-		System.out.println("rec10:" + rec10 / hours);
-		System.out.println("rec20:" + rec20 / hours);
+		System.out.println("pre 5:" + pre5 / validHours);
+		System.out.println("pre10:" + pre10 / validHours);
+		System.out.println("pre20:" + pre20 / validHours);
+		System.out.println("rec 5:" + rec5 / validHours);
+		System.out.println("rec10:" + rec10 / validHours);
+		System.out.println("rec20:" + rec20 / validHours);
 	}
 
 }

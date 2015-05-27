@@ -19,6 +19,8 @@ public class Dataset {
 	HashMap<String, LinkedList<CheckIn>> locList = new HashMap<String, LinkedList<CheckIn>>();
 	int firstHour;
 	int lastHour;
+	
+	final int totalHours = 24*7;
 
 	public Dataset(String filename) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(filename));
@@ -33,8 +35,8 @@ public class Dataset {
 				/ 1000 / 60 / 60);
 		System.out.println("last time: " + list.getLast().time.getTime() / 1000
 				/ 60 / 60);
-		firstHour = (int) (list.getFirst().time.getTime() / 1000 / 60 / 60);
-		lastHour = (int) (list.getLast().time.getTime() / 1000 / 60 / 60);
+		firstHour = (int) (list.getFirst().hour);
+		lastHour = (int) (list.getLast().hour);
 		for (CheckIn check : list) {
 			if (!userList.containsKey(check.userId))
 				userList.put(check.userId, new LinkedList<CheckIn>());
@@ -103,14 +105,15 @@ public class Dataset {
 	public HashSet<String> getPosSet(LinkedList<CheckIn> checkIns, int hour) {
 		HashSet<String> res = new HashSet<String>();
 		for (CheckIn check : checkIns) {
-			if (check.time.getTime() / 1000 / 60 / 60 %24 == hour)
+			if (check.hour % totalHours == hour)
+			//if (check.hour - firstHour == hour)
 				res.add(check.locId);
 		}
 		return res;
 	}
 
 	public int getHourLength() {
-		return 24;
+		return totalHours;
 		//return lastHour - firstHour + 1;
 	}
 }
